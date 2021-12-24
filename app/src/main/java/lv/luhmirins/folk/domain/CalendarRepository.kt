@@ -16,19 +16,19 @@ class CalendarRepository @Inject constructor(
     private val store: HolidayStore,
 ) {
 
-    suspend fun getHolidaysForDate(date: LocalDate): HolidaysResult =
+    suspend fun getHolidaysInRange(start: LocalDate, end: LocalDate): HolidaysResult =
         withContext(ioDispatcher) {
             val (minKnown, maxKnown) = store.getKnownDateRange()
-            val extraData = fetchExtraDatesUseCase(date, minKnown, maxKnown)
+            val extraData = fetchExtraDatesUseCase(start, minKnown, maxKnown)
 
             saveSuccesses(extraData)
-            val weeksData = store.getWeekHolidays(date)
 
             val error = extraData.firstOrNull { it is HolidaysResult.Error }
-            if (weeksData.isEmpty() && error != null) {
+            if (error != null) {
                 return@withContext error
             }
 
+            val weeksData = store.getWeekHolidays(start, end)
             HolidaysResult.Success(weeksData)
         }
 

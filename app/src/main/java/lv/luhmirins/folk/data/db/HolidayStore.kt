@@ -40,15 +40,16 @@ class HolidayStore @Inject constructor(
         min to max
     }
 
-    suspend fun getWeekHolidays(weekStart: LocalDate): List<CalendarDate> = withRealm { realm ->
-        val startDate = localDateToDate(weekStart)
-        val endDate = localDateToDate(weekStart.plusDays(7))
+    suspend fun getWeekHolidays(start: LocalDate, end: LocalDate): List<CalendarDate> = withRealm { realm ->
+        val startDate = localDateToDate(start)
+        val endDate = localDateToDate(end)
 
         val items = realm.where(HolidayObject::class.java)
             .between("date", startDate, endDate)
             .findAll()
 
-        items.groupBy { it.date }.map { (date, holidays) -> fromObject(date, holidays) }
+        items.groupBy { it.date }
+            .map { (date, holidays) -> fromObject(date, holidays) }
     }
 
     /**

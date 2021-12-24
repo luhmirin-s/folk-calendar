@@ -5,5 +5,5 @@ import java.time.LocalDate
 
 data class CalendarDate(
     val date: LocalDate,
-    val holidays: List<Holiday>
+    val holidays: List<Holiday> = emptyList(),
 )

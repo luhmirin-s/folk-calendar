@@ -7,8 +7,8 @@ Work plan:
 - [x] Add API definition and models
 - [x] Implement basic repository pattern to provide data to UI
 - [x] Add Realm and data caching to the repository
-- [ ] Implement simple list UI for current week
-- [ ] Implement date/week selection and fetching
+- [x] Implement simple list UI for current week
+- [x] Implement date/week selection and fetching
 - [ ] Implement start weekday selection
 - [ ] Store starting day in local prefs
 
