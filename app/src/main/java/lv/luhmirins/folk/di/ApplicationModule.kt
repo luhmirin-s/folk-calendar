@@ -12,6 +12,7 @@ import javax.inject.Named
         ApiModule::class,
         UtilitiesModule::class,
         DatabaseModule::class,
+        LocalPrefModule::class,
     ]
 )
 @InstallIn(SingletonComponent::class)

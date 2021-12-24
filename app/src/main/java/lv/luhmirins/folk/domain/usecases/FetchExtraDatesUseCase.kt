@@ -2,6 +2,7 @@ package lv.luhmirins.folk.domain.usecases
 
 import lv.luhmirins.folk.data.api.HolidaysApi
 import lv.luhmirins.folk.data.api.models.HolidaysRequest
+import lv.luhmirins.folk.data.prefs.Preferences
 import lv.luhmirins.folk.domain.model.HolidaysResult
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -13,6 +14,7 @@ class FetchExtraDatesUseCase @Inject constructor(
     @Named("apiDateFormat") private val apiDateFormatter: DateTimeFormatter,
     private val api: HolidaysApi,
     private val mapHolidayResponseUseCase: MapHolidayResponseUseCase,
+    private val prefs: Preferences,
 ) {
 
     suspend operator fun invoke(
@@ -23,11 +25,20 @@ class FetchExtraDatesUseCase @Inject constructor(
         val result = mutableListOf<HolidaysResult>()
         // If date is close to lower bounds of the known range
         if (isCloseToKnownLowerBound(date, minKnown)) {
-            result.add(fetchDates(minKnown.minusDays(29), minKnown))
-
+            val newMin = minKnown.minusDays(29)
+            val dates = fetchDates(newMin, minKnown)
+            if (dates is HolidaysResult.Success) {
+                prefs.minKnownDate = apiDateFormatter.format(newMin)
+            }
+            result.add(dates)
         } else if (isCloseToKnownUpperBound(date, maxKnown)) {
             // If date is close to upper bounds of known dates
-            result.add(fetchDates(minKnown.minusDays(29), minKnown))
+            val newMax = maxKnown.plusDays(29)
+            val dates = fetchDates(maxKnown, newMax)
+            if (dates is HolidaysResult.Success) {
+                prefs.maxKnownDate = apiDateFormatter.format(newMax)
+            }
+            result.add(dates)
         }
         return result
     }

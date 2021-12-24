@@ -12,8 +12,10 @@ import java.time.ZoneId
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
+import javax.inject.Singleton
 
 
+@Singleton
 class HolidayStore @Inject constructor(
     private val realmConfig: RealmConfiguration,
     @Named("realmDispatcher") private val dispatcher: CoroutineDispatcher
@@ -26,31 +28,18 @@ class HolidayStore @Inject constructor(
         realm.executeTransaction { it.insertOrUpdate(holidays) }
     }
 
-    suspend fun getKnownDateRange(): Pair<LocalDate, LocalDate> = withRealm { realm ->
-        val min = realm.where(HolidayObject::class.java)
-            .minimumDate("date")
-            ?.let { dateToLocalDate(it) }
-            ?: LocalDate.now()
+    suspend fun getWeekHolidays(start: LocalDate, end: LocalDate): List<CalendarDate> =
+        withRealm { realm ->
+            val startDate = localDateToDate(start)
+            val endDate = localDateToDate(end)
 
-        val max = realm.where(HolidayObject::class.java)
-            .maximumDate("date")
-            ?.let { dateToLocalDate(it) }
-            ?: LocalDate.now()
+            val items = realm.where(HolidayObject::class.java)
+                .between("date", startDate, endDate)
+                .findAll()
 
-        min to max
-    }
-
-    suspend fun getWeekHolidays(start: LocalDate, end: LocalDate): List<CalendarDate> = withRealm { realm ->
-        val startDate = localDateToDate(start)
-        val endDate = localDateToDate(end)
-
-        val items = realm.where(HolidayObject::class.java)
-            .between("date", startDate, endDate)
-            .findAll()
-
-        items.groupBy { it.date }
-            .map { (date, holidays) -> fromObject(date, holidays) }
-    }
+            items.groupBy { it.date }
+                .map { (date, holidays) -> fromObject(date, holidays) }
+        }
 
     /**
      * Convenience wrapper to enforce realm threading requirements in all calls.

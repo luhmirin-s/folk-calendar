@@ -5,6 +5,7 @@ import kotlinx.coroutines.withContext
 import lv.luhmirins.folk.data.db.HolidayStore
 import lv.luhmirins.folk.domain.model.HolidaysResult
 import lv.luhmirins.folk.domain.usecases.FetchExtraDatesUseCase
+import lv.luhmirins.folk.domain.usecases.GetKnownDateRangeUseCase
 import java.time.LocalDate
 import javax.inject.Inject
 import javax.inject.Named
@@ -13,12 +14,13 @@ import javax.inject.Named
 class CalendarRepository @Inject constructor(
     @Named("ioDispatcher") private val ioDispatcher: CoroutineDispatcher,
     private val fetchExtraDatesUseCase: FetchExtraDatesUseCase,
+    private val getKnownDateRangeUseCase: GetKnownDateRangeUseCase,
     private val store: HolidayStore,
 ) {
 
     suspend fun getHolidaysInRange(start: LocalDate, end: LocalDate): HolidaysResult =
         withContext(ioDispatcher) {
-            val (minKnown, maxKnown) = store.getKnownDateRange()
+            val (minKnown, maxKnown) = getKnownDateRangeUseCase()
             val extraData = fetchExtraDatesUseCase(start, minKnown, maxKnown)
 
             saveSuccesses(extraData)
