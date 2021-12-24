@@ -10,6 +10,10 @@ class GetKnownDateRangeUseCase @Inject constructor(
     @Named("apiDateFormat") private val apiDateFormatter: DateTimeFormatter,
     private val prefs: Preferences,
 ) {
+
+    /**
+     * Retrieves known date boundaries from local storage.
+     */
     suspend operator fun invoke(): Pair<LocalDate, LocalDate> {
         val min = prefs.minKnownDate
             ?.let { LocalDate.from(apiDateFormatter.parse(it)) }
@@ -21,5 +25,4 @@ class GetKnownDateRangeUseCase @Inject constructor(
 
         return min to max
     }
-
 }

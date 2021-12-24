@@ -11,6 +11,9 @@ class MapHolidayResponseUseCase @Inject constructor(
     @Named("apiDateFormat") private val apiDateFormatter: DateTimeFormatter,
 ) {
 
+    /**
+     * Maps API response to domain models.
+     */
     operator fun invoke(response: HolidaysResponse) = if (response.error) {
         HolidaysResult.Error(ErrorType.fromString(response.reason))
     } else {

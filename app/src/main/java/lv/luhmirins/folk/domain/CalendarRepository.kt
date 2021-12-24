@@ -18,6 +18,10 @@ class CalendarRepository @Inject constructor(
     private val store: HolidayStore,
 ) {
 
+    /**
+     * Returns known holidays in the provided range.
+     * If the range is close/over know date borders, extra data will be fetched.
+     */
     suspend fun getHolidaysInRange(start: LocalDate, end: LocalDate): HolidaysResult =
         withContext(ioDispatcher) {
             val (minKnown, maxKnown) = getKnownDateRangeUseCase()

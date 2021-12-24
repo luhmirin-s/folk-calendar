@@ -17,6 +17,10 @@ class FetchExtraDatesUseCase @Inject constructor(
     private val prefs: Preferences,
 ) {
 
+    /**
+     * Checks if the provided `date` is reasonably close to known data boundaries and
+     * when necessary fetches additional batches of data in that direction.
+     */
     suspend operator fun invoke(
         date: LocalDate,
         minKnown: LocalDate,
@@ -25,7 +29,7 @@ class FetchExtraDatesUseCase @Inject constructor(
         val result = mutableListOf<HolidaysResult>()
         // If date is close to lower bounds of the known range
         if (isCloseToKnownLowerBound(date, minKnown)) {
-            val newMin = minKnown.minusDays(29)
+            val newMin = minKnown.minusDays(DAYS_TO_FETCH)
             val dates = fetchDates(newMin, minKnown)
             if (dates is HolidaysResult.Success) {
                 prefs.minKnownDate = apiDateFormatter.format(newMin)
@@ -33,7 +37,7 @@ class FetchExtraDatesUseCase @Inject constructor(
             result.add(dates)
         } else if (isCloseToKnownUpperBound(date, maxKnown)) {
             // If date is close to upper bounds of known dates
-            val newMax = maxKnown.plusDays(29)
+            val newMax = maxKnown.plusDays(DAYS_TO_FETCH)
             val dates = fetchDates(maxKnown, newMax)
             if (dates is HolidaysResult.Success) {
                 prefs.maxKnownDate = apiDateFormatter.format(newMax)
@@ -60,5 +64,9 @@ class FetchExtraDatesUseCase @Inject constructor(
             )
         )
         return mapHolidayResponseUseCase(response)
+    }
+
+    companion object {
+        private const val DAYS_TO_FETCH = 29L
     }
 }

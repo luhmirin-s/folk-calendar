@@ -21,6 +21,9 @@ class HolidayStore @Inject constructor(
     @Named("realmDispatcher") private val dispatcher: CoroutineDispatcher
 ) {
 
+    /**
+     * Upserts provided holiday data.
+     */
     suspend fun saveHolidays(dates: List<CalendarDate>) = withRealm { realm ->
         val holidays = dates.flatMap { calendarDate ->
             calendarDate.holidays.map { it.toObject(calendarDate) }
@@ -28,6 +31,9 @@ class HolidayStore @Inject constructor(
         realm.executeTransaction { it.insertOrUpdate(holidays) }
     }
 
+    /**
+     * Returns all saved holiday records in the provided date range.
+     */
     suspend fun getWeekHolidays(start: LocalDate, end: LocalDate): List<CalendarDate> =
         withRealm { realm ->
             val startDate = localDateToDate(start)
@@ -60,8 +66,8 @@ class HolidayStore @Inject constructor(
         holidays = holidays.map { Holiday(it.name, it.type) }
     )
 
-    // Since Realm supports java.uti.Date and in app I use java.time.LocalDate dates
-    // have to converted between different formats
+    // Since Realm supports java.uti.Date and in app I use java.time.LocalDate,
+    // dates have to converted between different formats on the fly
 
     private fun localDateToDate(date: LocalDate) =
         Date.from(Instant.from(date.atStartOfDay(ZoneId.systemDefault())))

@@ -1,17 +1,3 @@
 # Estonian folk calendar
 
-Work plan: 
-
-- [x] Draft basic application architecture layout
-- [x] Add DI framework
-- [x] Add API definition and models
-- [x] Implement basic repository pattern to provide data to UI
-- [x] Add Realm and data caching to the repository
-- [x] Implement simple list UI for current week
-- [x] Implement date/week selection and fetching
-- [x] Implement start weekday selection
-- [x] Store starting day in local prefs
-
-## API key
-
 To run this app add `apiKey=<API KEY>` to `local.properties` file in repository root.
