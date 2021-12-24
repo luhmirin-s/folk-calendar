@@ -3,11 +3,11 @@ package lv.luhmirins.folk.ui.screens.calendar
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import lv.luhmirins.folk.data.prefs.Preferences
 import lv.luhmirins.folk.domain.CalendarRepository
 import lv.luhmirins.folk.domain.model.CalendarDate
 import lv.luhmirins.folk.domain.model.ErrorType
@@ -26,17 +26,25 @@ class CalendarViewModel @Inject constructor(
     private val repository: CalendarRepository,
     @Named("prettyDateFormat") private val dateFormatter: DateTimeFormatter,
     @Named("weekDayPrettyDateFormat") private val weekDayPrettyDateFormat: DateTimeFormatter,
-    savedStateHandle: SavedStateHandle,
+    private val preferences: Preferences,
 ) : ViewModel() {
 
     private var currentDate by mutableStateOf<LocalDate>(LocalDate.now())
-    var dateRange by mutableStateOf("")
+    private var startWeekFrom by mutableStateOf(DayOfWeek.MONDAY)
 
+    var dateRange by mutableStateOf("")
     var holidays by mutableStateOf<List<CalendarDateItem>>(emptyList())
     var error by mutableStateOf<String?>(null)
 
     init {
+        startWeekFrom = preferences.startWeekFrom
         loadHolidays(LocalDate.now())
+    }
+
+    fun setWeekStart(dayOfWeek: DayOfWeek) {
+        preferences.startWeekFrom = dayOfWeek
+        startWeekFrom = dayOfWeek
+        loadHolidays(currentDate)
     }
 
     fun loadCurrentWeek() {
@@ -53,7 +61,7 @@ class CalendarViewModel @Inject constructor(
 
     private fun loadHolidays(date: LocalDate) {
         viewModelScope.launch {
-            currentDate = date.with(DayOfWeek.MONDAY)
+            currentDate = date.with(startWeekFrom)
             val start = currentDate
             val end = start.plusDays(6)
             dateRange = "${dateFormatter.format(start)} - ${dateFormatter.format(end)}"

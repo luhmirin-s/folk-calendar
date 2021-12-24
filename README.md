@@ -9,8 +9,8 @@ Work plan:
 - [x] Add Realm and data caching to the repository
 - [x] Implement simple list UI for current week
 - [x] Implement date/week selection and fetching
-- [ ] Implement start weekday selection
-- [ ] Store starting day in local prefs
+- [x] Implement start weekday selection
+- [x] Store starting day in local prefs
 
 ## API key
 
