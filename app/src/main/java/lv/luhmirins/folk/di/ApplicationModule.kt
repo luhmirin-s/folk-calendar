@@ -11,6 +11,7 @@ import javax.inject.Named
     includes = [
         ApiModule::class,
         UtilitiesModule::class,
+        DatabaseModule::class,
     ]
 )
 @InstallIn(SingletonComponent::class)
