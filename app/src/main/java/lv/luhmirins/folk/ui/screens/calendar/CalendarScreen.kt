@@ -6,10 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -150,8 +147,8 @@ private fun HolidayName(
     ) {
         Icon(
             imageVector = when (item) {
-                is HolidayItems.Folk -> Icons.Filled.Warning
-                is HolidayItems.Public -> Icons.Filled.ShoppingCart
+                is HolidayItems.Folk -> Icons.Filled.Celebration
+                is HolidayItems.Public -> Icons.Filled.LocationCity
             },
             tint = onContainerColor,
             contentDescription = "Holiday!"
