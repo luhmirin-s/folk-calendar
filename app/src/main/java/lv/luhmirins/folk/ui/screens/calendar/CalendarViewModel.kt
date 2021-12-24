@@ -39,6 +39,10 @@ class CalendarViewModel @Inject constructor(
         loadHolidays(LocalDate.now())
     }
 
+    fun loadCurrentWeek() {
+        loadHolidays(LocalDate.now())
+    }
+
     fun loadWeekBefore() {
         loadHolidays(currentDate.minusWeeks(1))
     }

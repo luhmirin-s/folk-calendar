@@ -25,6 +25,7 @@ fun CalendarScreen() {
         vm.holidays,
         vm.error,
         vm::loadWeekBefore,
+        vm::loadCurrentWeek,
         vm::loadWeekAfter,
     )
 }
@@ -36,10 +37,11 @@ fun CalendarScreen(
     holidays: List<CalendarDateItem> = emptyList(),
     error: String? = null,
     onBack: () -> Unit = {},
+    onReset: () -> Unit = {},
     onForward: () -> Unit = {},
 ) {
     Scaffold(
-        topBar = { AppBar(selectedDate, onBack, onForward) },
+        topBar = { AppBar(selectedDate, onBack, onReset, onForward) },
     ) {
         if (error != null) {
             ErrorContainer(error)
@@ -56,6 +58,7 @@ fun CalendarScreen(
 private fun AppBar(
     selectedDate: String,
     onBack: () -> Unit,
+    onReset: () -> Unit,
     onForward: () -> Unit
 ) {
     MediumTopAppBar(
@@ -70,6 +73,12 @@ private fun AppBar(
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "Week before"
+                )
+            }
+            IconButton(onClick = onReset) {
+                Icon(
+                    imageVector = Icons.Filled.Today,
+                    contentDescription = "Reset"
                 )
             }
             IconButton(onClick = onForward) {
