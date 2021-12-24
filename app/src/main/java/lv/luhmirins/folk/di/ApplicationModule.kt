@@ -9,7 +9,8 @@ import javax.inject.Named
 
 @Module(
     includes = [
-        ApiModule::class
+        ApiModule::class,
+        UtilitiesModule::class,
     ]
 )
 @InstallIn(SingletonComponent::class)
