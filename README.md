@@ -3,7 +3,7 @@
 Work plan: 
 
 - [x] Draft basic application architecture layout
-- [ ] Add DI framework
+- [x] Add DI framework
 - [ ] Add API definition and models
 - [ ] Implement basic repository pattern to provide data to UI
 - [ ] Implement simple list UI for current week
